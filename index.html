@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>D-Link Parental Control Toggle</title>
+  <style>
+    body { font-family: Arial; background:#f8fafc; text-align:center; padding:40px; }
+    button { padding:12px 24px; margin:12px; font-size:16px; border:none; border-radius:8px; cursor:pointer; }
+    .on { background:#dc2626; color:white; }
+    .off { background:#16a34a; color:white; }
+  </style>
+</head>
+<body>
+  <h2>Parental Control Toggle</h2>
+  <p>Device: <b>MAJIDULLAHS-AIR (192.168.0.143)</b></p>
+
+  <button class="on" onclick="setParental(true)">Enable (Block Internet)</button>
+  <button class="off" onclick="setParental(false)">Disable (Allow Internet)</button>
+
+  <p id="status"></p>
+
+  <script>
+    async function setParental(state) {
+      document.getElementById('status').innerText = 'Sending...';
+      try {
+        const formData = new URLSearchParams();
+        formData.append('mac', 'f0:18:98:8f:a9:98');
+        formData.append('ip', '192.168.0.143');
+        formData.append('parental', state ? '1' : '0');
+
+        const res = await fetch('https://192.168.0.1/Set_Parental.cgi', {
+          method: 'POST',
+          body: formData,
+          credentials: 'include'
+        });
+
+        document.getElementById('status').innerText =
+          state ? 'Parental Control Enabled (Blocked)' : 'Parental Control Disabled (Allowed)';
+      } catch (err) {
+        document.getElementById('status').innerText = 'Failed — check login/session.';
+      }
+    }
+  </script>
+</body>
+</html>
